@@ -2,6 +2,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import random as rnd
+from scipy.stats import multivariate_normal
 
 main_dir = Path(r'C:\Users\lihel\Documents\MOOC')
 
@@ -27,12 +28,12 @@ post_cov = Sigma0 - Sigma0 @ A.T @ np.linalg.inv(Gamma + A @ Sigma0 @ A.T) @ A @
 print(f"the posterior mean by formula is {post_mean}")
 print(f"the posterior coveriance by formula is {post_cov}")
 
-def prior(m, sigma):
-    return rnd.normal(m, sigma)
+def prior_pdf(m, sigma):
+    return rnd.multivariate_normal(mean=m, cov=sigma).pdf
 
 def likelihood(q, x, A, Gamma):
     temp = np.log(q) - A @ x
-    return np.exp(-1/2 * temp.T @ Gamma @ temp)
+    return np.exp(-1/2 * temp.T @ Gamma @ temp) # TODO check matrix norm
 
-def prod_prior_likeli(prior, likeli):
+def posterior_pdf(prior, likeli, x):
     return prior * likeli

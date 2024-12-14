@@ -2,13 +2,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import numpy.random as rnd
 from scipy.stats import multivariate_normal as mvn
-
+import exer1
 
 n = 2  # dimension of the samples
 N = 5000  # number of desired samples in the chain
 x0 = np.zeros(n)  # starting point
-dens = mvn(mean=np.zeros(n), cov=np.eye(n)).pdf  # density to sample from
-prop_var = 2.38**2  # variance of proposal
+dens = exer1.posterior_pdf()  # target density to sample from
+prop_var = 2.38**2  # variance of proposal TODO 
 
 
 def proposal():
@@ -25,7 +25,10 @@ accptd = 0  # number of accepted proposals
 for j in range(1, N):
     eps = proposal()
     x_ = x + eps
-    dens_x_ = dens(x_)
+
+    prior = exer1.prior_pdf()
+    likeli = exer1.likelihood_pdf()
+    dens_x_ = dens(prior, likeli, x_)
 
     accpt_prob = np.min([1, dens_x_/dens_x])
 
