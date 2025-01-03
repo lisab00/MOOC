@@ -1,3 +1,9 @@
+'''
+setup file
+- create the two different bayesian models to be analyzed
+- create the rwmh algorithm code
+'''
+
 import numpy as np
 import numpy.random as rnd
 import matplotlib.pyplot as plt

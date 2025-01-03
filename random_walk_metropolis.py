@@ -1,3 +1,7 @@
+'''
+rwm template as given to us in the task
+'''
+
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.random as rnd
