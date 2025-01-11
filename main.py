@@ -29,11 +29,11 @@ def main():
 
     # read rwmh outputs
     df_output_mod1 = pd.read_csv('samples.txt', sep=',', header=None)
-    print(df_output_mod1.head())
+    print(df_output_mod1.head(15))
     
     # drop burin samples after visually examining results
-    df_output_mod1.drop(index=[0,1,], inplace=True)
-    print(df_output_mod1.head())
+    val = input("drop indices until index (inclusive): ")
+    df_output_mod1.drop(index=np.arange(int(val)+1), inplace=True)
 
     # plot parameter densities
     # compute rwmh mean and variance
