@@ -1,9 +1,13 @@
 from pathlib import Path
 import pandas as pd
 import numpy as np
+import random as rd
 import setup
 
 def main():
+
+    # set seed
+    rd.seed(123)
 
     # load data
     main_dir = Path(r'C:\Users\lihel\Documents\MOOC')
@@ -22,6 +26,20 @@ def main():
     # execute the rwmh algorithm
     rwmh = setup.rwmh(model=model1, prop_var=2.38**2, x0=np.zeros(2), N=5000)
     rwmh.execute()
+
+    # read rwmh outputs
+    df_output_mod1 = pd.read_csv('samples.txt', sep=',', header=None)
+    print(df_output_mod1.head())
+    
+    # drop burin samples after visually examining results
+    df_output_mod1.drop(index=[0,1,], inplace=True)
+    print(df_output_mod1.head())
+
+    # plot parameter densities
+    # compute rwmh mean and variance
+    rwmh_results = (np.mean(df_output_mod1, axis=0), np.cov(df_output_mod1, rowvar=False))
+    print(f"the posterior mean by rwmh algo is {rwmh_results[0]}")
+    print(f"the posterior coveriance by rwmh algo is {rwmh_results[1]}")
     
 
 if __name__ == '__main__':
