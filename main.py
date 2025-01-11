@@ -24,7 +24,7 @@ def main():
     print(f"the posterior coveriance by formula is {formula_results[1]}")
 
     # execute the rwmh algorithm
-    rwmh = setup.rwmh(model=model1, prop_var=2.38**2, x0=np.zeros(2), N=5000)
+    rwmh = setup.rwmh(model=model1, prop_var=2.38**2, n=2, x0=np.zeros(2), N=5000)
     rwmh.execute()
 
     # read rwmh outputs
