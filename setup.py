@@ -89,11 +89,10 @@ class rwmh:
                 # Print acceptance rate every 100th step
                 print("Acceptance rate: %f" % (accptd/j))
 
-        np.savetxt('samples.txt', samples)
+        np.savetxt('samples.txt', samples, delimiter=',')
         plt.figure()
         plt.plot(range(1, self.N+1), samples[:, 0])  # plot first component of all chain elements
         plt.plot(range(1, self.N+1), samples[:, 1])  # plot first component of all chain elements
         plt.tight_layout()
         plt.savefig('plot.png')
         plt.show()
-            
