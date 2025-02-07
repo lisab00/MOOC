@@ -10,14 +10,15 @@ def main():
     # set seed
     np.random.seed(123)
 
-    # load data
-    main_dir = Path(r'C:\Users\lihel\Documents\MOOC')
-    data = pd.read_csv('rc_Q_V.txt', sep=',')
+    # load data for model 1 (here we need log(Q)) # for model 2 load data newly
+    main_dir = Path(r'C:\Users\lihel\Documents\MOOC\exercise_1')
+    data_log = pd.read_csv(main_dir / 'rc_Q_V.txt', sep=',')
+    data_log['Q'] = np.log(data_log['Q'])
 
     ### perform tasks for model1
 
     # create model1 instance
-    model1 = setup.model1(data, noise_level=0.03)
+    model1 = setup.model1(data_log, noise_level=0.03)
 
     # compute mean and covariance of posterior by formula
     formula_results = model1.formula_post_mean_var()
@@ -25,7 +26,7 @@ def main():
     print(f"the posterior coveriance by formula is {formula_results[1]}")
 
     # execute the rwmh algorithm
-    rwmh = setup.rwmh(model=model1, prop_var=0.02, n=2, x0=np.zeros(2), N=5000)
+    rwmh = setup.rwmh(model=model1, prop_var=2.38 ** 2, n=2, x0=np.zeros(2), N=20000)
     rwmh.execute()
 
     # read rwmh outputs

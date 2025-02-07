@@ -17,13 +17,13 @@ class bayes_model:
     def __init__(self, data, noise_level):
         self.data = data
         self.q = data['Q']
-        self.Gamma = np.diag(noise_level * np.log(self.q)) #Gamma depends on noise level and is set from task to task
+        self.Gamma = np.diag(noise_level * self.q) #Gamma depends on noise level and is set from task to task
 
     def prior(self, x):
         return mvnorm(mean=self.m0, cov=self.Sigma0).pdf(x)
 
     def likelihood(self, x):
-        temp = np.log(self.q) - self.A @ x
+        temp = self.q - self.A @ x
         #return np.exp(-1/2 * temp.T @ self.Gamma @ temp) #different matrix norm
         Gamma_inv_sqrt = np.diag(1. / np.sqrt(np.diag(self.Gamma))) # norm from bayesian inversian lecture video (block 1)
         return np.exp(-1/2 * np.linalg.norm(Gamma_inv_sqrt @ temp)**2.)
