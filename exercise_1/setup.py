@@ -8,16 +8,19 @@ import numpy as np
 import numpy.random as rnd
 import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal as mvnorm
+from pathlib import Path
+
+main_dir = Path(r'C:\Users\lihel\Documents\MOOC\exercise_1')
 
 class bayes_model:
 
-    m0 = np.array([0.,0.])
-    Sigma0 = np.array([[10.,0.], [0., 10.]])
-
-    def __init__(self, data, noise_level):
+    def __init__(self, data, noise_level, n):
         self.data = data
         self.q = data['Q']
         self.Gamma = np.diag(noise_level * self.q) #Gamma depends on noise level and is set from task to task
+        self.n = n
+        self.m0 = np.zeros(n)
+        self.Sigma0 = 10 * np.eye(n)
 
     def prior(self, x):
         return mvnorm(mean=self.m0, cov=self.Sigma0).pdf(x)
@@ -39,24 +42,25 @@ class bayes_model:
 
 class model1(bayes_model):
 
-    def __init__(self, data, noise_level):
-        super().__init__(data, noise_level)
+    def __init__(self, data, noise_level, n):
+        super().__init__(data, noise_level, n)
         self.A = np.column_stack((np.ones(len(data)), np.log(data['H'].values)))
         
 
 class model2(bayes_model):
 
-    def __init__(self, data, noise_level):
-        super().__init__(data, noise_level)
-        self.A = np.column_stack(np.ones(len(data)), data['H'].values, data['H'].values**2)
+    def __init__(self, data, noise_level, n):
+        super().__init__(data, noise_level, n)
+        self.A = np.column_stack((np.ones(len(data)), data['H'].values, data['H'].values**2))
+        print(self.A)
     
 
 class rwmh:
 
-    def __init__(self, model, prop_var, n, x0, N):
+    def __init__(self, model, prop_var, x0, N):
         self.sigma2 = prop_var
         self.model = model
-        self.n = n # dimension of the samples
+        self.n = model.n # dimension of the samples
         self.x0 = x0
         self.N = N
 
@@ -86,14 +90,14 @@ class rwmh:
 
             samples[j, :] = x
 
-            if j % 100 == 0:
+            if j % 1000 == 0:
                 # Print acceptance rate every 100th step
                 print("Acceptance rate: %f" % (accptd/j))
 
-        np.savetxt('samples.txt', samples, delimiter=',')
+        np.savetxt(main_dir / "outputs" / "model_2" / "samples" / "samples.txt", samples, delimiter=',')
         plt.figure()
-        plt.plot(range(1, self.N+1), samples[:, 0])  # plot first component of all chain elements
-        plt.plot(range(1, self.N+1), samples[:, 1])  # plot first component of all chain elements
+        for i in np.arange(self.n):
+            plt.plot(range(1, self.N+1), samples[:, i])  # plot first component of all chain elements
         plt.tight_layout()
         plt.savefig('plot.png')
         plt.show()
